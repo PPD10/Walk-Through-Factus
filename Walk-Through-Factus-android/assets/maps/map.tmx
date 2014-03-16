@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="256" height="129" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="grass_9" tilewidth="32" tileheight="32">
+  <image source="grass_9.png" width="512" height="640"/>
+ </tileset>
+ <layer name="Calque de Tile 1" width="256" height="129">
+  <data encoding="base64" compression="zlib">
+   eJzt07sNgDAMQEFLsACCCTIC+w9HSjo+RZzAPelay0rkCEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSlF0BfmsBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOBSdLAD0F50sAMAAAAAAAAAAAAAAPDMVM0DzwfeW6tt4PnAfYWmsv8bzvYPyn5TGEX2rbp/yJN9q+4f8hxXP6y3
+  </data>
+ </layer>
+</map>
