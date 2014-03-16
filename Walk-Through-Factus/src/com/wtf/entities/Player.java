@@ -37,7 +37,7 @@ public class Player extends Entity {
 
 		setCurrentAnimation(walking);
 
-		setX(150);
+		setX(100);
 		setY(124);
 	}
 
@@ -48,6 +48,9 @@ public class Player extends Entity {
 		stateTime += delta;
 		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
 		batch.draw(currentFrame, getX(), getY());
+		
+		setWidth(currentFrame.getRegionWidth());
+		setHeight(currentFrame.getRegionHeight());
 	}
 
 	private TextureRegion[] getFrames(String path) {
@@ -61,6 +64,7 @@ public class Player extends Entity {
 				frames[index++] = tmp[i][j];
 			}
 		}
+		texture.dispose();
 		return frames;
 	}
 	
