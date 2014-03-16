@@ -15,6 +15,8 @@ public class Player extends Entity {
 	private static final int FRAME_COLS = 4;
 	private static final int FRAME_ROWS = 1;
 	private static final float FRAME_DURATION = 0.1f;
+	
+	private static final int SPEED = 4;
 
 	private Animation walking;
 	private Animation jumping;
@@ -35,12 +37,14 @@ public class Player extends Entity {
 
 		setCurrentAnimation(walking);
 
-		setX(416);
+		setX(150);
 		setY(124);
 	}
 
 	@Override
-	public void render(float delta, SpriteBatch batch) {		
+	public void render(float delta, SpriteBatch batch) {
+		setX(getX() + SPEED);
+		
 		stateTime += delta;
 		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
 		batch.draw(currentFrame, getX(), getY());
