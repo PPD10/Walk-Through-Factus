@@ -1,13 +1,18 @@
 package com.wtf;
 
 import com.badlogic.gdx.Game;
-import com.wtf.screens.PlayScreen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wtf.screens.GameScreen;
 
 public class WTF extends Game {
 
+	private SpriteBatch batch;
+	
 	@Override
 	public void create() {
-		this.setScreen(new PlayScreen());
+        batch = new SpriteBatch();
+
+		this.setScreen(new GameScreen(this));
 	}
 
 	@Override
@@ -33,6 +38,10 @@ public class WTF extends Game {
 	@Override
 	public void resume() {
 		super.resume();
+	}
+	
+	public SpriteBatch getBatch() {
+		return batch;
 	}
 
 }
