@@ -15,22 +15,24 @@ public class Player extends Entity {
 	private static final int FRAME_COLS = 4;
 	private static final int FRAME_ROWS = 1;
 	private static final float FRAME_DURATION = 0.1f;
-	
+
 	private static final int SPEED = 4;
+	
+	private static final int JUMP_HEIGHT = 100;
 
 	private Animation walking;
 	private Animation jumping;
-	private Animation diving;	
-	
+	private Animation diving;
+
 	private Animation currentAnimation;
 	private float stateTime;
 	private TextureRegion currentFrame;
 
 	public Player() {
 		super();
-		
+
 		currentFrame = new TextureRegion();
-		
+
 		walking = new Animation(FRAME_DURATION, getFrames(PATH_WALKING));
 		jumping = new Animation(FRAME_DURATION, getFrames(PATH_JUMPING));
 		diving = new Animation(FRAME_DURATION, getFrames(PATH_DIVING));
@@ -43,14 +45,31 @@ public class Player extends Entity {
 
 	@Override
 	public void render(float delta, SpriteBatch batch) {
-		setX(getX() + SPEED);
-		
 		stateTime += delta;
 		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-		batch.draw(currentFrame, getX(), getY());
 		
-		setWidth(currentFrame.getRegionWidth());
-		setHeight(currentFrame.getRegionHeight());
+		// Si le personnage a fini son saut ou son plongeon, il remarche
+		if(currentAnimation.isAnimationFinished(stateTime) && (!isWalking())){
+			setCurrentAnimation(walking);
+		}
+				
+		// Déplacements en ordonnée
+		// Si le personnage saute
+		int y = getY();
+		
+		if (isJumping()) {
+			float frame = (stateTime % currentAnimation.animationDuration) * (1 / FRAME_DURATION);
+			
+			if (frame < 1)
+				y += JUMP_HEIGHT / 2;
+			else if (frame < 3)
+				y += JUMP_HEIGHT;
+		}
+		
+		// Déplacements en abscisse
+		setX(getX() + SPEED);
+		
+		batch.draw(currentFrame, getX(), y);
 	}
 
 	private TextureRegion[] getFrames(String path) {
@@ -64,13 +83,30 @@ public class Player extends Entity {
 				frames[index++] = tmp[i][j];
 			}
 		}
-		texture.dispose();
 		return frames;
 	}
-	
+
 	private void setCurrentAnimation(Animation animation) {
-		currentAnimation = animation;
+		this.currentAnimation = animation;
 		stateTime = 0f;
+	}
+
+	public boolean isWalking() {
+		return currentAnimation == walking;
+	}
+	
+	public boolean isJumping() {
+		return currentAnimation == jumping;
+	}
+
+	public void jump() {
+		if (isWalking())
+			setCurrentAnimation(jumping);
+	}
+
+	public void dive() {
+		if (isWalking())
+			setCurrentAnimation(diving);
 	}
 
 }
