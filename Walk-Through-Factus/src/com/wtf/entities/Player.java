@@ -18,7 +18,8 @@ public class Player extends Entity {
 
 	private static final int SPEED = 4;
 	
-	private static final int JUMP_HEIGHT = 100;
+	private static final int JUMPING_PIXELS = 100;
+	private static final int DIVING_PIXELS = 100;
 
 	private Animation walking;
 	private Animation jumping;
@@ -46,30 +47,36 @@ public class Player extends Entity {
 	@Override
 	public void render(float delta, SpriteBatch batch) {
 		stateTime += delta;
-		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
 		
 		// Si le personnage a fini son saut ou son plongeon, il remarche
 		if(currentAnimation.isAnimationFinished(stateTime) && (!isWalking())){
 			setCurrentAnimation(walking);
 		}
+		
+		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
 				
-		// Déplacements en ordonnée
-		// Si le personnage saute
+		int x = getX();
 		int y = getY();
 		
+		// Déplacements en ordonnée
+		// Si le personnage saute		
 		if (isJumping()) {
 			float frame = (stateTime % currentAnimation.animationDuration) * (1 / FRAME_DURATION);
 			
 			if (frame < 1)
-				y += JUMP_HEIGHT / 2;
+				y += JUMPING_PIXELS / 2;
 			else if (frame < 3)
-				y += JUMP_HEIGHT;
+				y += JUMPING_PIXELS;
+		}
+		
+		if (isDiving()) {
+			x -= DIVING_PIXELS;
 		}
 		
 		// Déplacements en abscisse
 		setX(getX() + SPEED);
 		
-		batch.draw(currentFrame, getX(), y);
+		batch.draw(currentFrame, x, y);
 	}
 
 	private TextureRegion[] getFrames(String path) {
@@ -97,6 +104,10 @@ public class Player extends Entity {
 	
 	public boolean isJumping() {
 		return currentAnimation == jumping;
+	}
+	
+	public boolean isDiving() {
+		return currentAnimation == diving;
 	}
 
 	public void jump() {
