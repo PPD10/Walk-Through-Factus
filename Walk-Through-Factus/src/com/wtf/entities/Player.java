@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Player extends Entity {
 
-	private static final String PATH_WALKING = "maps/entities/characters/giraffe/walking.png";
-	private static final String PATH_JUMPING = "maps/entities/characters/giraffe/jumping.png";
-	private static final String PATH_DIVING = "maps/entities/characters/giraffe/diving.png";
+	private static final String PATH_WALKING = "worlds/entities/characters/giraffe/walking.png";
+	private static final String PATH_JUMPING = "worlds/entities/characters/giraffe/jumping.png";
+	private static final String PATH_DIVING = "worlds/entities/characters/giraffe/diving.png";
 
 	private static final int FRAME_COLS = 4;
 	private static final int FRAME_ROWS = 1;
@@ -18,7 +18,10 @@ public class Player extends Entity {
 
 	private static final int SPEED = 4;
 	
-	private static final int JUMPING_PIXELS = 100;
+	private static final int FLOOR = 124;
+	private static final int START_X = 100;
+
+	private static final int JUMPING_PIXELS = 50;
 	private static final int DIVING_PIXELS = 100;
 
 	private Animation walking;
@@ -28,6 +31,7 @@ public class Player extends Entity {
 	private Animation currentAnimation;
 	private float stateTime;
 	private TextureRegion currentFrame;
+	private int currentFrameNumber;
 
 	public Player() {
 		super();
@@ -40,45 +44,52 @@ public class Player extends Entity {
 
 		setCurrentAnimation(walking);
 
-		setX(100);
-		setY(124);
+		// Faire en sorte d'initialiser le personnage sur le sol
+		// Mettre en constantes les positions de départ
+		setX(START_X);
+		setY(FLOOR);
 	}
-
-	@Override
-	public void render(float delta, SpriteBatch batch) {
+	
+	public void move(float delta) {
 		stateTime += delta;
-		
+
 		// Si le personnage a fini son saut ou son plongeon, il remarche
 		if (currentAnimation.isAnimationFinished(stateTime) && (!isWalking())) {
 			setCurrentAnimation(walking);
 		}
-		
+
 		currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-				
-		int x = getX();
-		int y = getY();
 		
-		// Déplacements en ordonnée
-		// Si le personnage saute		
+		setWidth(currentFrame.getRegionWidth());
+		setHeight(currentFrame.getRegionHeight());
+
+		// Si le personnage saute, déplacement en ordonnée
 		if (isJumping()) {
-			float frame = (stateTime % currentAnimation.animationDuration) * (1 / FRAME_DURATION);
-			
-			if (frame < 1)
-				y += JUMPING_PIXELS / 2;
-			else if (frame < 3)
-				y += JUMPING_PIXELS;
+			float frame = (stateTime % currentAnimation.animationDuration)
+					* (1 / FRAME_DURATION);
+
+			if (frame < 1 && currentFrameNumber != 1) {
+				currentFrameNumber = 1;
+				setY(getY() + JUMPING_PIXELS);
+			} else if (frame > 1 && frame < 3 && currentFrameNumber != 2) {
+				currentFrameNumber = 2;
+				setY(getY() + JUMPING_PIXELS);
+			} else if (frame > 3 && frame < 4 && currentFrameNumber != 4) {
+				currentFrameNumber = 4;
+				setY(getY() - JUMPING_PIXELS);
+			}
 		}
-		
-		// Déplacements en abscisse
-		// Si le personnage plonge
-		if (isDiving()) {
-			x -= DIVING_PIXELS;
-		}
-		
-		// Déplacements en abscisse
-		// setX(getX() + SPEED);
-		
-		batch.draw(currentFrame, x, y);
+		// Sinon, sur le sol
+		else
+			setY(FLOOR);
+
+		// Avancer, déplacement en abscisse
+		setX(getX() + SPEED);
+	}
+	
+	@Override
+	public void render(float delta, SpriteBatch batch) {
+		batch.draw(currentFrame, getX(), getY());
 	}
 
 	private TextureRegion[] getFrames(String path) {
@@ -98,16 +109,17 @@ public class Player extends Entity {
 	private void setCurrentAnimation(Animation animation) {
 		this.currentAnimation = animation;
 		stateTime = 0f;
+		currentFrameNumber = 0;
 	}
 
 	public boolean isWalking() {
 		return currentAnimation == walking;
 	}
-	
+
 	public boolean isJumping() {
 		return currentAnimation == jumping;
 	}
-	
+
 	public boolean isDiving() {
 		return currentAnimation == diving;
 	}

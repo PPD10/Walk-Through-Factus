@@ -15,7 +15,7 @@ import com.wtf.inputs.MyGestureListener;
 
 public class GameScreen implements Screen {
 
-	private static final String PATH_MAP = "maps/map.tmx";
+	private static final String PATH_MAP = "worlds/maps/map.tmx";
 	
 	private final WTF game;
 
@@ -51,6 +51,8 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		player.move(delta);
+		
 		moveCamera();
 
 		camera.update();
@@ -63,6 +65,8 @@ public class GameScreen implements Screen {
 		game.getBatch().begin();
 		player.render(delta, game.getBatch());
 		game.getBatch().end();
+		
+		
 	}
 	
 	// La caméra suit le personnage en abscisse dans la limite de la map
@@ -70,7 +74,9 @@ public class GameScreen implements Screen {
 	// sachant que les coordonnées x, y et z correspondent au point de la map 
 	// qui sera affiché au milieu de l'écran
 	private void moveCamera() {
+		// À changer quand toutes les images seront de la même taille
 		float x = player.getX();
+		//float x = player.getX() + player.getWidth() / 2;
 		float y = camera.viewportHeight / 2;
 
 		// Si le personnage n'est pas encore arrivé au quart du viewport
@@ -84,7 +90,7 @@ public class GameScreen implements Screen {
 		// Sinon on affiche le personnage à un quart du viewport
 		else
 			x += camera.viewportWidth / 4;
-			
+				
 		camera.position.set(x, y, 0);
 		camera.update();
 	}
