@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Player extends Entity {
 
-	private static final String PATH_WALKING = "entities/characters/giraffe/walking.png";
-	private static final String PATH_JUMPING = "entities/characters/giraffe/jumping.png";
-	private static final String PATH_DIVING = "entities/characters/giraffe/diving.png";
+	private static final String PATH_WALKING = "maps/entities/characters/giraffe/walking.png";
+	private static final String PATH_JUMPING = "maps/entities/characters/giraffe/jumping.png";
+	private static final String PATH_DIVING = "maps/entities/characters/giraffe/diving.png";
 
 	private static final int FRAME_COLS = 4;
 	private static final int FRAME_ROWS = 1;
@@ -49,7 +49,7 @@ public class Player extends Entity {
 		stateTime += delta;
 		
 		// Si le personnage a fini son saut ou son plongeon, il remarche
-		if(currentAnimation.isAnimationFinished(stateTime) && (!isWalking())){
+		if (currentAnimation.isAnimationFinished(stateTime) && (!isWalking())) {
 			setCurrentAnimation(walking);
 		}
 		
@@ -69,12 +69,14 @@ public class Player extends Entity {
 				y += JUMPING_PIXELS;
 		}
 		
+		// Déplacements en abscisse
+		// Si le personnage plonge
 		if (isDiving()) {
 			x -= DIVING_PIXELS;
 		}
 		
 		// Déplacements en abscisse
-		setX(getX() + SPEED);
+		// setX(getX() + SPEED);
 		
 		batch.draw(currentFrame, x, y);
 	}
