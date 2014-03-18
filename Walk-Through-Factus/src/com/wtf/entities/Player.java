@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity {
 
@@ -18,11 +19,10 @@ public class Player extends Entity {
 
 	private static final int SPEED = 4;
 	
-	private static final int FLOOR = 124;
+	private static final int FLOOR = 101;
 	private static final int START_X = 100;
 
 	private static final int JUMPING_PIXELS = 50;
-	private static final int DIVING_PIXELS = 100;
 
 	private Animation walking;
 	private Animation jumping;
@@ -32,6 +32,8 @@ public class Player extends Entity {
 	private float stateTime;
 	private TextureRegion currentFrame;
 	private int currentFrameNumber;
+	
+	TiledMapTileLayer collisionsLayer;
 
 	public Player() {
 		super();
@@ -83,6 +85,9 @@ public class Player extends Entity {
 		else
 			setY(FLOOR);
 
+		// MODIFIER
+		// Faire une girafe qui descend ?
+		
 		// Avancer, déplacement en abscisse
 		setX(getX() + SPEED);
 	}

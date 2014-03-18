@@ -65,8 +65,6 @@ public class GameScreen implements Screen {
 		game.getBatch().begin();
 		player.render(delta, game.getBatch());
 		game.getBatch().end();
-		
-		
 	}
 	
 	// La caméra suit le personnage en abscisse dans la limite de la map
