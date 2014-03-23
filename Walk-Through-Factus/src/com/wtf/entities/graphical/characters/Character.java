@@ -1,0 +1,249 @@
+package com.wtf.entities.graphical.characters;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.wtf.entities.graphical.GraphicalEntity;
+
+public class Character extends GraphicalEntity {
+
+	private static final String FOLDER_PATH = "worlds/entities/characters/";
+
+	private static final String WALKING_FILENAME = "walking.png";
+	private static final String JUMPING_FILENAME = "jumping.png";
+	private static final String DIVING_FILENAME = "diving.png";
+	private static final String LOSER_FILENAME = "loser.png";
+	private static final String WINNER_FILENAME = "winner.png";
+
+	private static final String MUSIC_FILENAME = "music.mp3";
+
+	private static final int START_X = 100;
+	private static final int START_Y = 150;
+
+	private static final int SPEED = 6;
+	private static final int JUMP_UP = 100;
+
+	private static final int FRAME_COLS = 4;
+	private static final int FRAME_ROWS = 1;
+	private static final float FRAME_DURATION = 0.15f;
+
+	private static CharacterFactory characterFactory = new CharacterFactory();
+
+	private String folderName;
+
+	private Texture walkingTexture;
+	private Texture jumpingTexture;
+	private Texture divingTexture;
+	private Texture loserTexture;
+	private Texture winnerTexture;
+
+	private Animation walking;
+	private Animation jumping;
+	private Animation diving;
+
+	private TextureRegion previousRegion;
+	private Animation currentAnimation;
+	private float stateTime; // Temps depuis le début de l'animation
+	private int currentFrameNumber;
+
+	private TextureRegion loser;
+	private TextureRegion winner;
+
+	private Music backgroundMusic;
+
+	public Character(String folderName) {
+		// Initialisation du personnage
+		super(START_X, START_Y);
+
+		this.folderName = folderName;
+
+		// Initialisation des textures
+		walkingTexture = new Texture(
+				Gdx.files.internal(formatPath(WALKING_FILENAME)));
+		jumpingTexture = new Texture(
+				Gdx.files.internal(formatPath(JUMPING_FILENAME)));
+		divingTexture = new Texture(
+				Gdx.files.internal(formatPath(DIVING_FILENAME)));
+		loserTexture = new Texture(
+				Gdx.files.internal(formatPath(LOSER_FILENAME)));
+		winnerTexture = new Texture(
+				Gdx.files.internal(formatPath(WINNER_FILENAME)));
+
+		// Initialisation des animations et textureRegions
+		walking = new Animation(FRAME_DURATION, getFrames(walkingTexture));
+		jumping = new Animation(FRAME_DURATION, getFrames(jumpingTexture));
+		diving = new Animation(FRAME_DURATION, getFrames(divingTexture));
+		loser = new TextureRegion(loserTexture);
+		winner = new TextureRegion(winnerTexture);
+
+		// Initialisation de la musique de fond
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files
+				.internal(formatPath(MUSIC_FILENAME)));
+
+		// Initialisation du personnage en marche
+		walk();
+	}
+
+	public static CharacterFactory getCharacterFactory() {
+		return characterFactory;
+	}
+
+	// Retourne le chemin d'accès du nom de fichier passé en paramètre
+	private String formatPath(String filename) {
+		return FOLDER_PATH + folderName + filename;
+	}
+
+	// Retourne les frames de la texture d'une animation passée en paramètre
+	private TextureRegion[] getFrames(Texture texture) {
+		TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()
+				/ FRAME_COLS, texture.getHeight() / FRAME_ROWS);
+		TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+		int index = 0;
+		for (int i = 0; i < FRAME_ROWS; i++) {
+			for (int j = 0; j < FRAME_COLS; j++) {
+				frames[index++] = tmp[i][j];
+			}
+		}
+		return frames;
+	}
+
+	private void setPreviousRegion(TextureRegion region) {
+		previousRegion = region;
+	}
+
+	// Changement d'animation
+	private void setCurrentAnimation(Animation animation) {
+		this.currentAnimation = animation;
+		stateTime = 0f;
+		currentFrameNumber = 0;
+	}
+
+	// Animation du personnage
+	public void move(float delta) {
+		stateTime += delta;
+
+		// Si saut ou plongeon terminé, remise en marche du personnage
+		if (currentAnimation.isAnimationFinished(stateTime)) {
+			walk();
+		}
+
+		// La textureRegion précédente affichée
+		setPreviousRegion(getRegion());
+		// La textureRegion actuelle de l'animation à afficher
+		setRegion(currentAnimation.getKeyFrame(stateTime, true));
+
+		setX();
+
+		// Si en saut, déplacement en ordonnée selon le frame de l'animation
+		// affiché
+		if (isJumping()) {
+			// Calcul du frame actuel entre 1 et le nombre de frames total de
+			// l'animation
+			int frame = (int) Math
+					.ceil(((stateTime % currentAnimation.animationDuration) * (1 / FRAME_DURATION)));
+
+			if (frame == 1 && currentFrameNumber != 1) {
+				currentFrameNumber = 1;
+				setY(getY() + JUMP_UP);
+			} else if (frame == 2 && currentFrameNumber != 2) {
+				currentFrameNumber = 2;
+				setY(getY() + JUMP_UP);
+			} else if (frame == 3 && currentFrameNumber != 3) {
+				currentFrameNumber = 3;
+				// Pas de modification de position ici, les frames 2 et 3 étant
+				// identiques
+			} else if (frame == 4 && currentFrameNumber != 4) {
+				currentFrameNumber = 4;
+				setY(getY() - JUMP_UP);
+			}
+		}
+	}
+
+	// Toujours faire en sorte que le bord droit de la textureRegion
+	// affichée reste identique à la précédente, sachant que x représente
+	// l'abscisse du bord gauche
+	private void setX() {
+		if (previousRegion != null)
+			setX(getX() + previousRegion.getRegionWidth()
+					- getRegion().getRegionWidth());
+	}
+
+	public String getFolderName() {
+		return folderName;
+	}
+
+	public boolean isWalking() {
+		return currentAnimation == walking;
+	}
+
+	public boolean isJumping() {
+		return currentAnimation == jumping;
+	}
+
+	public boolean isDiving() {
+		return currentAnimation == diving;
+	}
+	
+	public boolean hasWon() {
+		return getRegion() == winner;
+	}
+
+	public boolean hasLost() {
+		return getRegion() == loser;
+	}
+
+	public void walk() {
+		if (!isWalking())
+			setCurrentAnimation(walking);
+	}
+
+	public void jump() {
+		if (isWalking())
+			setCurrentAnimation(jumping);
+	}
+
+	public void dive() {
+		if (isWalking())
+			setCurrentAnimation(diving);
+	}
+	
+	public void win() {
+		setX();
+		setRegion(winner);
+	}
+	
+	public void lose() {
+		setX();
+		setRegion(loser);
+	}
+
+	public void moveForward() {
+		setX(getX() + SPEED);
+	}
+
+	public void fallDown(int ground) {
+		if (!isJumping())
+			setY(ground);
+	}
+
+	/*
+	 * public String getPathFood() { return pathFood; }
+	 */
+
+	public Music getBackgroundMusic() {
+		return backgroundMusic;
+	}
+
+	public void dispose() {
+		walkingTexture.dispose();
+		jumpingTexture.dispose();
+		divingTexture.dispose();
+		loserTexture.dispose();
+		winnerTexture.dispose();
+
+		backgroundMusic.dispose();
+	}
+
+}
