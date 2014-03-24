@@ -14,7 +14,6 @@ import com.wtf.entities.graphical.foods.Food;
 import com.wtf.entities.infos.HealthPoints;
 import com.wtf.levels.Level;
 import com.wtf.levels.LevelEnum;
-import com.wtf.levels.LevelFactory;
 
 public class Game {
 
@@ -25,7 +24,7 @@ public class Game {
 
 	public Game(CharacterEnum characterName, LevelEnum levelName) {
 		character = CharacterFactory.getCharacter(characterName);
-		level = LevelFactory.getLevel(levelName, character);
+		level = character.getLevel(levelName);
 
 		healthPoints = new HealthPoints();
 		foods = new ArrayList<Food>();

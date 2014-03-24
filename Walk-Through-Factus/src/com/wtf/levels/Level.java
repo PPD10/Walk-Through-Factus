@@ -1,7 +1,5 @@
 package com.wtf.levels;
 
-import com.wtf.entities.graphical.characters.Character;
-
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -11,15 +9,11 @@ public abstract class Level {
 	private static final String FOLDER_PATH = "worlds/maps/";
 	private static final String MAP_FILENAME = "map.tmx";
 
-	private Character character;
-
 	private TiledMap map;
 
-	public Level(String foldername, Character character) {
-		this.character = character;
-
+	public Level(String foldername, String characterFolderName) {
 		map = new TmxMapLoader().load(formatPath(foldername,
-				character.getFolderName()));
+				characterFolderName));
 	}
 
 	public String formatPath(String levelFolderName, String characterFolderName) {

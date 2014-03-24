@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.wtf.entities.graphical.GraphicalEntity;
 import com.wtf.entities.graphical.foods.Food;
+import com.wtf.levels.Level;
+import com.wtf.levels.LevelEnum;
+import com.wtf.levels.LevelFactory;
 
 public abstract class Character extends GraphicalEntity {
 
@@ -83,6 +86,10 @@ public abstract class Character extends GraphicalEntity {
 
 		// Initialisation du personnage en marche
 		walk();
+	}
+
+	public Level getLevel(LevelEnum levelName) {
+		return LevelFactory.getLevel(levelName, folderName);
 	}
 
 	public abstract Food getFood(int x, int y);
@@ -182,7 +189,7 @@ public abstract class Character extends GraphicalEntity {
 	public boolean isDiving() {
 		return currentAnimation == diving;
 	}
-	
+
 	public boolean hasWon() {
 		return getRegion() == winner;
 	}
@@ -205,12 +212,12 @@ public abstract class Character extends GraphicalEntity {
 		if (isWalking())
 			setCurrentAnimation(diving);
 	}
-	
+
 	public void win() {
 		setX();
 		setRegion(winner);
 	}
-	
+
 	public void lose() {
 		setX();
 		setRegion(loser);

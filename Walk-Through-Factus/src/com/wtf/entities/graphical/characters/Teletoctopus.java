@@ -6,6 +6,7 @@ import com.wtf.entities.graphical.foods.FoodFactory;
 
 public class Teletoctopus extends Character {
 
+	public static final CharacterEnum characterName = CharacterEnum.TELETOCTOPUS;
 	public static final String FOLDER_NAME = "teletoctopus/";
 
 	public Teletoctopus() {
