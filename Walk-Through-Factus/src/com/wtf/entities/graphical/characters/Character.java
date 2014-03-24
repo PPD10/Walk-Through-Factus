@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.wtf.entities.graphical.GraphicalEntity;
 import com.wtf.entities.graphical.foods.Food;
+import com.wtf.entities.graphical.foods.FoodEnum;
+import com.wtf.entities.graphical.foods.FoodFactory;
 import com.wtf.levels.Level;
 import com.wtf.levels.LevelEnum;
 import com.wtf.levels.LevelFactory;
@@ -34,6 +36,8 @@ public abstract class Character extends GraphicalEntity {
 	private static final float FRAME_DURATION = 0.15f;
 
 	private String folderName;
+	
+	private FoodEnum foodName;
 
 	private Texture walkingTexture;
 	private Texture jumpingTexture;
@@ -55,11 +59,12 @@ public abstract class Character extends GraphicalEntity {
 
 	private Music backgroundMusic;
 
-	public Character(String folderName) {
+	public Character(String folderName, FoodEnum foodName) {
 		// Initialisation du personnage
 		super(START_X, START_Y);
 
 		this.folderName = folderName;
+		this.foodName = foodName;
 
 		// Initialisation des textures
 		walkingTexture = new Texture(
@@ -92,7 +97,9 @@ public abstract class Character extends GraphicalEntity {
 		return LevelFactory.getLevel(levelName, folderName);
 	}
 
-	public abstract Food getFood(int x, int y);
+	public Food getFood(int x, int y) {
+		return FoodFactory.getFood(foodName, x, y);
+	}
 
 	// Retourne le chemin d'accès du nom de fichier passé en paramètre
 	private String formatPath(String filename) {
