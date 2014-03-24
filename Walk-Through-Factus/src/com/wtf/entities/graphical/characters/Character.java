@@ -5,6 +5,10 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import static com.wtf.assets.GameAssets.*;
+
+import com.wtf.assets.GameAssets;
 import com.wtf.entities.graphical.GraphicalEntity;
 import com.wtf.entities.graphical.foods.Food;
 import com.wtf.entities.graphical.foods.FoodEnum;
@@ -14,16 +18,6 @@ import com.wtf.levels.LevelEnum;
 import com.wtf.levels.LevelFactory;
 
 public abstract class Character extends GraphicalEntity {
-
-	private static final String FOLDER_PATH = "worlds/entities/characters/";
-
-	private static final String WALKING_FILENAME = "walking.png";
-	private static final String JUMPING_FILENAME = "jumping.png";
-	private static final String DIVING_FILENAME = "diving.png";
-	private static final String LOSER_FILENAME = "loser.png";
-	private static final String WINNER_FILENAME = "winner.png";
-
-	private static final String MUSIC_FILENAME = "music.mp3";
 
 	private static final int START_X = 100;
 	private static final int START_Y = 150;
@@ -67,16 +61,11 @@ public abstract class Character extends GraphicalEntity {
 		this.foodName = foodName;
 
 		// Initialisation des textures
-		walkingTexture = new Texture(
-				Gdx.files.internal(formatPath(WALKING_FILENAME)));
-		jumpingTexture = new Texture(
-				Gdx.files.internal(formatPath(JUMPING_FILENAME)));
-		divingTexture = new Texture(
-				Gdx.files.internal(formatPath(DIVING_FILENAME)));
-		loserTexture = new Texture(
-				Gdx.files.internal(formatPath(LOSER_FILENAME)));
-		winnerTexture = new Texture(
-				Gdx.files.internal(formatPath(WINNER_FILENAME)));
+		walkingTexture = GameAssets.manager.get(formatPath(WALKING_FILENAME));
+		jumpingTexture = GameAssets.manager.get(formatPath(JUMPING_FILENAME));
+		divingTexture = GameAssets.manager.get(formatPath(DIVING_FILENAME));
+		loserTexture = GameAssets.manager.get(formatPath(LOSER_FILENAME));
+		winnerTexture = GameAssets.manager.get(formatPath(WINNER_FILENAME));
 
 		// Initialisation des animations et textureRegions
 		walking = new Animation(FRAME_DURATION, getFrames(walkingTexture));
@@ -103,7 +92,7 @@ public abstract class Character extends GraphicalEntity {
 
 	// Retourne le chemin d'accès du nom de fichier passé en paramètre
 	private String formatPath(String filename) {
-		return FOLDER_PATH + folderName + filename;
+		return CHARACTER_FOLDER_PATH + folderName + filename;
 	}
 
 	// Retourne les frames de la texture d'une animation passée en paramètre

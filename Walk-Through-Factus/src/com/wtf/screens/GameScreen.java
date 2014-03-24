@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.wtf.WTF;
+import com.wtf.assets.GameAssets;
 import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.CharacterEnum;
 import com.wtf.games.Game;
@@ -25,6 +26,10 @@ public class GameScreen implements Screen {
 	private EntityRenderer entityRenderer;
 
 	public GameScreen(WTF wtf, CharacterEnum characterName, LevelEnum levelName) {
+		// Chargement des gameAssets
+		GameAssets.load(characterName, levelName);
+		GameAssets.manager.finishLoading();
+
 		this.wtf = wtf;
 
 		game = new Game(characterName, levelName);
@@ -155,6 +160,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		game.getCharacter().dispose();
 		game.getLevel().dispose();
+		GameAssets.dispose();
 	}
 
 }

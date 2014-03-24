@@ -1,14 +1,14 @@
 package com.wtf.entities.graphical.characters;
 
+import static com.wtf.assets.GameAssets.*;
 import com.wtf.entities.graphical.foods.FoodEnum;
 
 public class Teletoctopus extends Character {
 
-	private static final String FOLDER_NAME = "teletoctopus/";
-	private static final FoodEnum FOOD_NAME = FoodEnum.CHOCOLATE_ECLAIR;
+	public static final FoodEnum FOOD_NAME = FoodEnum.CHOCOLATE_ECLAIR;
 
 	public Teletoctopus() {
-		super(FOLDER_NAME, FOOD_NAME);
+		super(TELETOCTOPUS_FOLDER_NAME, FOOD_NAME);
 	}
 
 }
