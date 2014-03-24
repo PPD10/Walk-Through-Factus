@@ -1,11 +1,11 @@
 package com.wtf.levels;
 
+import static com.wtf.assets.GameAssets.*;
+
 public class Level1 extends Level {
 
-	private static final String FOLDER_NAME = "level1/";
-
 	public Level1(String characterFolderName) {
-		super(FOLDER_NAME, characterFolderName);
+		super(LEVEL1_FOLDER_NAME, characterFolderName);
 	}
 
 }

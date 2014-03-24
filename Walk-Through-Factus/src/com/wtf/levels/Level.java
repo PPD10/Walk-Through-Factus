@@ -2,22 +2,20 @@ package com.wtf.levels;
 
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.wtf.assets.GameAssets;
+
+import static com.wtf.assets.GameAssets.*;
 
 public abstract class Level {
-
-	private static final String FOLDER_PATH = "worlds/maps/";
-	private static final String MAP_FILENAME = "map.tmx";
 
 	private TiledMap map;
 
 	public Level(String foldername, String characterFolderName) {
-		map = new TmxMapLoader().load(formatPath(foldername,
-				characterFolderName));
+		map = GameAssets.manager.get(formatPath(foldername, characterFolderName));
 	}
 
 	public String formatPath(String levelFolderName, String characterFolderName) {
-		return FOLDER_PATH + levelFolderName + characterFolderName
+		return MAP_FOLDER_PATH + levelFolderName + characterFolderName
 				+ MAP_FILENAME;
 	}
 
@@ -35,10 +33,6 @@ public abstract class Level {
 		MapProperties properties = map.getProperties();
 		return (int) properties.get("height", Integer.class)
 				* properties.get("tileheight", Integer.class);
-	}
-
-	public void dispose() {
-		map.dispose();
 	}
 
 }

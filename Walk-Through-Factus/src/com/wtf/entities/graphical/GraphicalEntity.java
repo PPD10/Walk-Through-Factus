@@ -1,8 +1,8 @@
 package com.wtf.entities.graphical;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.wtf.assets.GameAssets;
 import com.wtf.entities.Entity;
 
 public class GraphicalEntity extends Entity {
@@ -16,7 +16,7 @@ public class GraphicalEntity extends Entity {
 	public GraphicalEntity(int x, int y, String regionPath) {
 		this(x, y);
 
-		region = new TextureRegion(new Texture(Gdx.files.internal(regionPath)));
+		region = new TextureRegion((Texture) GameAssets.manager.get(regionPath));
 	}
 
 	public TextureRegion getRegion() {

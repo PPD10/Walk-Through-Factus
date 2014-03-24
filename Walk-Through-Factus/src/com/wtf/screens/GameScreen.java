@@ -158,8 +158,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		game.getCharacter().dispose();
-		game.getLevel().dispose();
 		GameAssets.dispose();
 	}
 

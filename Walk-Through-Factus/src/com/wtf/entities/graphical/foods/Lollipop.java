@@ -1,11 +1,11 @@
 package com.wtf.entities.graphical.foods;
 
+import static com.wtf.assets.GameAssets.*;
+
 public class Lollipop extends Food {
 
-	private static final String FILE_NAME = "lollipop.png";
-
 	public Lollipop(int x, int y) {
-		super(x, y, FILE_NAME);
+		super(x, y, LOLLIPOP_FILENAME);
 	}
 	
 }

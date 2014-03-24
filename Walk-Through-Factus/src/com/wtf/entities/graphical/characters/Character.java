@@ -1,13 +1,17 @@
 package com.wtf.entities.graphical.characters;
 
-import com.badlogic.gdx.Gdx;
+import static com.wtf.assets.GameAssets.CHARACTER_FOLDER_PATH;
+import static com.wtf.assets.GameAssets.DIVING_FILENAME;
+import static com.wtf.assets.GameAssets.JUMPING_FILENAME;
+import static com.wtf.assets.GameAssets.LOSER_FILENAME;
+import static com.wtf.assets.GameAssets.MUSIC_FILENAME;
+import static com.wtf.assets.GameAssets.WALKING_FILENAME;
+import static com.wtf.assets.GameAssets.WINNER_FILENAME;
+
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import static com.wtf.assets.GameAssets.*;
-
 import com.wtf.assets.GameAssets;
 import com.wtf.entities.graphical.GraphicalEntity;
 import com.wtf.entities.graphical.foods.Food;
@@ -75,8 +79,7 @@ public abstract class Character extends GraphicalEntity {
 		winner = new TextureRegion(winnerTexture);
 
 		// Initialisation de la musique de fond
-		backgroundMusic = Gdx.audio.newMusic(Gdx.files
-				.internal(formatPath(MUSIC_FILENAME)));
+		backgroundMusic = GameAssets.manager.get(formatPath(MUSIC_FILENAME));
 
 		// Initialisation du personnage en marche
 		walk();
@@ -234,16 +237,6 @@ public abstract class Character extends GraphicalEntity {
 
 	public Music getBackgroundMusic() {
 		return backgroundMusic;
-	}
-
-	public void dispose() {
-		walkingTexture.dispose();
-		jumpingTexture.dispose();
-		divingTexture.dispose();
-		loserTexture.dispose();
-		winnerTexture.dispose();
-
-		backgroundMusic.dispose();
 	}
 
 }
