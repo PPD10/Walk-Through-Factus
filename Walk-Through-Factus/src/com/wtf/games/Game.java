@@ -96,7 +96,7 @@ public class Game {
 
 	private void checkWallCollision(TiledMapTileLayer layer, int mapRightX,
 			int mapDownY) {
-		if (!cellHasLayerProperty(layer, mapRightX + 1, mapDownY, "wall"))
+		if (!cellHasLayerProperty(layer, mapRightX, mapDownY, "wall"))
 			character.moveForward();
 	}
 
