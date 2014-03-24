@@ -4,7 +4,7 @@ import com.wtf.entities.graphical.characters.Character;
 
 public class LevelFactory {
 
-	public Level getLevel(LevelEnum levelName, Character character) {
+	public static Level getLevel(LevelEnum levelName, Character character) {
 		Level level;
 
 		switch (levelName) {

@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.wtf.entities.graphical.GraphicalEntity;
+import com.wtf.entities.graphical.foods.Food;
 
-public class Character extends GraphicalEntity {
+public abstract class Character extends GraphicalEntity {
 
 	private static final String FOLDER_PATH = "worlds/entities/characters/";
 
@@ -28,8 +29,6 @@ public class Character extends GraphicalEntity {
 	private static final int FRAME_COLS = 4;
 	private static final int FRAME_ROWS = 1;
 	private static final float FRAME_DURATION = 0.15f;
-
-	private static CharacterFactory characterFactory = new CharacterFactory();
 
 	private String folderName;
 
@@ -86,9 +85,7 @@ public class Character extends GraphicalEntity {
 		walk();
 	}
 
-	public static CharacterFactory getCharacterFactory() {
-		return characterFactory;
-	}
+	public abstract Food getFood(int x, int y);
 
 	// Retourne le chemin d'accès du nom de fichier passé en paramètre
 	private String formatPath(String filename) {

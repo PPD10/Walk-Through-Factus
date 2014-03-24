@@ -1,24 +1,40 @@
 package com.wtf.games;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.Character;
 import com.wtf.entities.graphical.characters.CharacterEnum;
+import com.wtf.entities.graphical.characters.CharacterFactory;
+import com.wtf.entities.graphical.foods.Food;
 import com.wtf.entities.infos.HealthPoints;
 import com.wtf.levels.Level;
 import com.wtf.levels.LevelEnum;
+import com.wtf.levels.LevelFactory;
 
 public class Game {
 
 	private Character character;
 	private Level level;
 	private HealthPoints healthPoints;
+	private ArrayList<Food> foods;
 
 	public Game(CharacterEnum characterName, LevelEnum levelName) {
-		character = Character.getCharacterFactory().getCharacter(characterName);
-		level = Level.getLevelFactory().getLevel(levelName, character);
+		character = CharacterFactory.getCharacter(characterName);
+		level = LevelFactory.getLevel(levelName, character);
 
 		healthPoints = new HealthPoints();
+		foods = new ArrayList<Food>();
+		setFoods();
+	}
+
+	private void setFoods() {
+		// Mettre les foods selon la map
+		foods.add(character.getFood(500, 200));
 	}
 
 	public Character getCharacter() {
@@ -31,6 +47,17 @@ public class Game {
 
 	public HealthPoints getHealthPoints() {
 		return healthPoints;
+	}
+
+	public void render(EntityRenderer entityRenderer, BitmapFont font, SpriteBatch batch, float delta) {
+		// Le personnage
+		entityRenderer.render(batch, character, delta);
+		// Les points de vie
+		entityRenderer.render(font, batch, healthPoints, delta);
+		// La nourriture
+		for (Food food : foods) {
+			entityRenderer.render(batch, food, delta);
+		}
 	}
 
 	public void checkCollisions() {

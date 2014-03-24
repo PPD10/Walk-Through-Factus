@@ -1,7 +1,5 @@
 package com.wtf.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,7 +9,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.wtf.WTF;
 import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.CharacterEnum;
-import com.wtf.entities.graphical.foods.Food;
 import com.wtf.games.Game;
 import com.wtf.inputs.PlayerGestureListener;
 import com.wtf.levels.LevelEnum;
@@ -21,8 +18,6 @@ public class GameScreen implements Screen {
 	private final WTF wtf;
 
 	private Game game;
-
-	private ArrayList<Food> foods;
 
 	private OrthographicCamera camera;
 
@@ -37,9 +32,6 @@ public class GameScreen implements Screen {
 		game.getCharacter().getBackgroundMusic().setLooping(true);
 		game.getCharacter().getBackgroundMusic().play();
 
-		foods = new ArrayList<Food>();
-		// setFoods();
-
 		// Caméra dont l'affichage est égal à la taille de l'écran
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(),
@@ -53,11 +45,6 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new GestureDetector(
 				new PlayerGestureListener(game.getCharacter())));
 	}
-
-	/*
-	 * // Initialisation de la nourriture à récolter private void setFoods() {
-	 * foods.add(new Food(50, 250, game.getCharacter().getPathFood())); }
-	 */
 
 	@Override
 	public void render(float delta) {
@@ -94,15 +81,7 @@ public class GameScreen implements Screen {
 		// Affichages sur la partie affichée par la caméra
 		wtf.getBatch().setProjectionMatrix(camera.combined);
 		wtf.getBatch().begin();
-		// Les points de vie
-		entityRenderer.render(wtf.getFont(), wtf.getBatch(),
-				game.getHealthPoints(), delta);
-		// La nourriture
-		for (Food food : foods) {
-			entityRenderer.render(wtf.getBatch(), food, delta);
-		}
-		// Le personnage
-		entityRenderer.render(wtf.getBatch(), game.getCharacter(), delta);
+		game.render(entityRenderer, wtf.getFont(), wtf.getBatch(), delta);
 		wtf.getBatch().end();
 	}
 

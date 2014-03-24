@@ -6,12 +6,10 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-public class Level {
+public abstract class Level {
 
 	private static final String FOLDER_PATH = "worlds/maps/";
 	private static final String MAP_FILENAME = "map.tmx";
-
-	private static LevelFactory levelFactory = new LevelFactory();
 
 	private Character character;
 
@@ -22,10 +20,6 @@ public class Level {
 
 		map = new TmxMapLoader().load(formatPath(foldername,
 				character.getFolderName()));
-	}
-
-	public static LevelFactory getLevelFactory() {
-		return levelFactory;
 	}
 
 	public String formatPath(String levelFolderName, String characterFolderName) {

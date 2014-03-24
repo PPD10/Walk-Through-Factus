@@ -2,7 +2,7 @@ package com.wtf.entities.graphical.characters;
 
 public class CharacterFactory {
 
-	public Character getCharacter(CharacterEnum characterName) {
+	public static Character getCharacter(CharacterEnum characterName) {
 		Character character;
 
 		switch (characterName) {
