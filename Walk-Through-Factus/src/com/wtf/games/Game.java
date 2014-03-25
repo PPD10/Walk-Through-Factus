@@ -31,11 +31,21 @@ public class Game {
 		setFoods();
 	}
 
+	// Initialise les foods selon les positions indiquées sur la map
 	private void setFoods() {
-		// Mettre les foods selon la map
-		foods.add(character.getFood(500, 200));
-	}
+		TiledMapTileLayer layer = (TiledMapTileLayer) level.getMap()
+				.getLayers().get("collisions");
+		int tileXMax = layer.getWidth();
+		int tileYMax = layer.getHeight();
 
+		for (int tileX = 0; tileX < tileXMax; ++tileX)
+			for (int tileY = 0; tileY < tileYMax; ++tileY)
+				if (cellHasLayerProperty(layer, tileX, tileY, "food"))
+					foods.add(character.getFood(
+							(int) (tileX * layer.getTileWidth()),
+							(int) (tileY * layer.getTileHeight())));
+	}
+	
 	public Character getCharacter() {
 		return character;
 	}
@@ -48,15 +58,16 @@ public class Game {
 		return healthPoints;
 	}
 
-	public void render(EntityRenderer entityRenderer, BitmapFont font, SpriteBatch batch, float delta) {
-		// Le personnage
-		entityRenderer.render(batch, character, delta);
+	public void render(EntityRenderer entityRenderer, BitmapFont font,
+			SpriteBatch batch, float delta) {
 		// Les points de vie
 		entityRenderer.render(font, batch, healthPoints, delta);
 		// La nourriture
 		for (Food food : foods) {
 			entityRenderer.render(batch, food, delta);
 		}
+		// Le personnage
+		entityRenderer.render(batch, character, delta);
 	}
 
 	public void checkCollisions() {
@@ -70,43 +81,43 @@ public class Game {
 		int downY = character.getY();
 
 		// Position en cellules
-		int mapLeftX = (int) (leftX / layer.getTileWidth());
-		int mapCenterX = (int) (centerX / layer.getTileWidth());
-		int mapRightX = (int) (rightX / layer.getTileWidth());
-		int mapDownY = (int) (downY / layer.getTileHeight());
+		int tileLeftX = (int) (leftX / layer.getTileWidth());
+		int tileCenterX = (int) (centerX / layer.getTileWidth());
+		int tileRightX = (int) (rightX / layer.getTileWidth());
+		int tileDownY = (int) (downY / layer.getTileHeight());
 
-		checkSeaCollision(layer, mapCenterX, mapDownY);
-		checkGroundCollision(layer, mapCenterX, mapDownY);
-		checkWallCollision(layer, mapRightX, mapDownY);
-		checkFactusCollision(layer, mapRightX, mapLeftX, mapDownY);
-		checkEndCollision(layer, mapRightX, mapDownY);
+		checkSeaCollision(layer, tileCenterX, tileDownY);
+		checkGroundCollision(layer, tileCenterX, tileDownY);
+		checkWallCollision(layer, tileRightX, tileDownY);
+		checkFactusCollision(layer, tileRightX, tileLeftX, tileDownY);
+		checkEndCollision(layer, tileRightX, tileDownY);
 	}
 
-	private void checkSeaCollision(TiledMapTileLayer layer, int mapCenterX,
-			int mapDownY) {
-		if (cellHasLayerProperty(layer, mapCenterX, mapDownY - 1, "sea"))
+	private void checkSeaCollision(TiledMapTileLayer layer, int tileCenterX,
+			int tileDownY) {
+		if (cellHasLayerProperty(layer, tileCenterX, tileDownY - 1, "sea"))
 			character.lose();
 	}
 
-	private void checkGroundCollision(TiledMapTileLayer layer, int mapCenterX,
-			int mapDownY) {
-		if (!cellHasLayerProperty(layer, mapCenterX, mapDownY - 1, "ground"))
-			character.fallDown((int) ((mapDownY - 1) * layer.getTileHeight()));
+	private void checkGroundCollision(TiledMapTileLayer layer, int tileCenterX,
+			int tileDownY) {
+		if (!cellHasLayerProperty(layer, tileCenterX, tileDownY - 1, "ground"))
+			character.fallDown((int) ((tileDownY - 1) * layer.getTileHeight()));
 	}
 
-	private void checkWallCollision(TiledMapTileLayer layer, int mapRightX,
-			int mapDownY) {
-		if (!cellHasLayerProperty(layer, mapRightX, mapDownY, "wall"))
+	private void checkWallCollision(TiledMapTileLayer layer, int tileRightX,
+			int tileDownY) {
+		if (!cellHasLayerProperty(layer, tileRightX, tileDownY, "wall"))
 			character.moveForward();
 	}
 
-	private void checkFactusCollision(TiledMapTileLayer layer, int mapRightX,
-			int mapLeftX, int mapDownY) {
-		for (int mapX = mapRightX; mapX > mapLeftX; --mapX)
-			if (cellHasLayerProperty(layer, mapX, mapDownY, "factus")) {
+	private void checkFactusCollision(TiledMapTileLayer layer, int tileRightX,
+			int tileLeftX, int tileDownY) {
+		for (int tileX = tileRightX; tileX > tileLeftX; --tileX)
+			if (cellHasLayerProperty(layer, tileX, tileDownY, "factus")) {
 				// Thread.sleep(500); ?
 				// Déplacement du personnage après le factus
-				character.setX((int) ((mapX + 1) * layer.getTileWidth()));
+				character.setX((int) ((tileX + 1) * layer.getTileWidth()));
 				healthPoints.lose();
 				if (healthPoints.allLost())
 					character.lose();
@@ -114,9 +125,9 @@ public class Game {
 			}
 	}
 
-	private void checkEndCollision(TiledMapTileLayer layer, int mapRightX,
-			int mapDownY) {
-		if (cellHasLayerProperty(layer, mapRightX, mapDownY, "end"))
+	private void checkEndCollision(TiledMapTileLayer layer, int tileRightX,
+			int tileDownY) {
+		if (cellHasLayerProperty(layer, tileRightX, tileDownY, "end"))
 			character.win();
 	}
 
