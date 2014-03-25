@@ -1,33 +1,43 @@
 package com.wtf.games;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.wtf.entities.Entity;
 import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.Character;
 import com.wtf.entities.graphical.characters.CharacterEnum;
 import com.wtf.entities.graphical.characters.CharacterFactory;
 import com.wtf.entities.graphical.foods.Food;
 import com.wtf.entities.infos.HealthPoints;
+import com.wtf.entities.infos.Score;
 import com.wtf.levels.Level;
 import com.wtf.levels.LevelEnum;
 
 public class Game {
+	
+	private static final String HEALTHPOINTS_KEY = "healthpoints";
+	private static final String SCORE_KEY = "score";
 
 	private Character character;
 	private Level level;
-	private HealthPoints healthPoints;
-	private ArrayList<Food> foods;
+	private Map<String, Entity> infos;
+	private Vector<Food> foods;
 
 	public Game(CharacterEnum characterName, LevelEnum levelName) {
 		character = CharacterFactory.getCharacter(characterName);
 		level = character.getLevel(levelName);
 
-		healthPoints = new HealthPoints();
-		foods = new ArrayList<Food>();
+		infos = new HashMap<String, Entity>();
+		infos.put(HEALTHPOINTS_KEY, new HealthPoints());
+		infos.put(SCORE_KEY, new Score());
+		
+		foods = new Vector<Food>();
 		setFoods();
 	}
 
@@ -45,7 +55,7 @@ public class Game {
 							(int) (tileX * layer.getTileWidth()),
 							(int) (tileY * layer.getTileHeight())));
 	}
-	
+
 	public Character getCharacter() {
 		return character;
 	}
@@ -53,15 +63,24 @@ public class Game {
 	public Level getLevel() {
 		return level;
 	}
+	
+	public Map<String, Entity> getInfos() {
+		return infos;
+	}
 
 	public HealthPoints getHealthPoints() {
-		return healthPoints;
+		return (HealthPoints) infos.get(HEALTHPOINTS_KEY);
+	}
+	
+	public Score getScore() {
+		return (Score) infos.get(SCORE_KEY);
 	}
 
 	public void render(EntityRenderer entityRenderer, BitmapFont font,
 			SpriteBatch batch, float delta) {
-		// Les points de vie
-		entityRenderer.render(font, batch, healthPoints, delta);
+		// Les infos
+		for (Map.Entry<String, Entity> info : infos.entrySet())
+			entityRenderer.render(font, batch, info.getValue(), delta);
 		// La nourriture
 		for (Food food : foods) {
 			entityRenderer.render(batch, food, delta);
@@ -78,19 +97,38 @@ public class Game {
 		int leftX = character.getX();
 		int centerX = character.getX() + character.getWidth() / 2;
 		int rightX = character.getX() + character.getWidth();
+		int upY = character.getY() + character.getHeight();
 		int downY = character.getY();
 
 		// Position en cellules
 		int tileLeftX = (int) (leftX / layer.getTileWidth());
 		int tileCenterX = (int) (centerX / layer.getTileWidth());
 		int tileRightX = (int) (rightX / layer.getTileWidth());
+		int tileUpY = (int) (upY / layer.getTileHeight());
 		int tileDownY = (int) (downY / layer.getTileHeight());
 
+		checkFoodCollision(layer, tileLeftX, tileRightX, tileUpY, tileDownY);
 		checkSeaCollision(layer, tileCenterX, tileDownY);
 		checkGroundCollision(layer, tileCenterX, tileDownY);
 		checkWallCollision(layer, tileRightX, tileDownY);
 		checkFactusCollision(layer, tileRightX, tileLeftX, tileDownY);
 		checkEndCollision(layer, tileRightX, tileDownY);
+	}
+
+	private void checkFoodCollision(TiledMapTileLayer layer, int tileLeftX,
+			int tileRightX, int tileUpY, int tileDownY) {
+		for (int tileX = tileRightX - 1; tileX > tileLeftX - 1; --tileX)
+			for (int tileY = tileUpY - 1; tileY > tileDownY - 1; --tileY)
+				for (Food food : foods) {
+					int foodTileX = (int) (food.getX() / layer.getTileWidth());
+					int foodTileY = (int) (food.getY() / layer.getTileHeight());
+					
+					if (foodTileX == tileX && foodTileY == tileY) {
+						getScore().add(Food.getPoints());
+						foods.remove(food);
+						return;
+					}
+				}
 	}
 
 	private void checkSeaCollision(TiledMapTileLayer layer, int tileCenterX,
@@ -118,8 +156,8 @@ public class Game {
 				// Thread.sleep(500); ?
 				// Déplacement du personnage après le factus
 				character.setX((int) ((tileX + 1) * layer.getTileWidth()));
-				healthPoints.lose();
-				if (healthPoints.allLost())
+				getHealthPoints().lose();
+				if (getHealthPoints().allLost())
 					character.lose();
 				return;
 			}

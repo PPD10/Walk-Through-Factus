@@ -1,5 +1,7 @@
 package com.wtf.screens;
 
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.wtf.WTF;
 import com.wtf.assets.GameAssets;
+import com.wtf.entities.Entity;
 import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.CharacterEnum;
 import com.wtf.games.Game;
@@ -66,7 +69,7 @@ public class GameScreen implements Screen {
 			updateCameraPosition();
 
 			// Mise à jour de la position des informations
-			updateHealthPointsPosition();
+			updateInfosPosition();
 		} else {
 			// Mise en pause de l'exécution pendant deux secondes
 			try {
@@ -118,17 +121,20 @@ public class GameScreen implements Screen {
 		camera.update();
 	}
 
-	// Mise à jour de la position des points de vie selon la position de la
-	// caméra
-	// Ils sont placés à 9/10 de l'écran en abscisse et en ordonnée
-	// sachant que les coordonnées x et y correspondent au point de la map
-	// qui sera affiché au milieu de l'écran
-	private void updateHealthPointsPosition() {
-		float x = camera.position.x + (camera.viewportWidth * 4 / 10);
+	// Mise à jour des infos selon la position de la caméra
+	// Ils sont placés à 8/10 (1/2 + 4/10) de l'écran en abscisse et à 9/10 en 
+	// ordonnée, sachant que les coordonnées x et y correspondent au point de 
+	// la map qui sera affiché au milieu de l'écran, et espacés de 20 pixels
+	private void updateInfosPosition() {
+
+		float x = camera.position.x + (camera.viewportWidth * 3 / 10);
 		float y = camera.position.y + (camera.viewportHeight * 4 / 10);
 
-		game.getHealthPoints().setX((int) x);
-		game.getHealthPoints().setY((int) y);
+		for (Map.Entry<String, Entity> info : game.getInfos().entrySet()) {
+			info.getValue().setX((int) x);
+			info.getValue().setY((int) y);
+			y -= 20;
+		}
 	}
 
 	@Override

@@ -29,18 +29,4 @@ public abstract class Entity {
 		this.y = y;
 	}
 
-	// Si deux classes Entity ont les mêmes coordonnées, retourne true,
-	// Sinon false
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		Entity entity = (Entity) obj;
-		return (this.x == entity.x && this.y == entity.y);
-	}
-
 }
