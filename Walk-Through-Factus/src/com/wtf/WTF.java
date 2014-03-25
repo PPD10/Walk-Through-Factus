@@ -17,7 +17,7 @@ public class WTF extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 
-		this.setScreen(new GameScreen(this, CharacterEnum.PUNK_GIRAFFE,
+		this.setScreen(new GameScreen(this, CharacterEnum.FLUFFY_BALL,
 				LevelEnum.LEVEL1));
 	}
 
