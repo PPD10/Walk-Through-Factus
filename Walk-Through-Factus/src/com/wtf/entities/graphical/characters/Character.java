@@ -196,19 +196,23 @@ public abstract class Character extends GraphicalEntity {
 	public boolean hasLost() {
 		return getRegion() == loser;
 	}
+	
+	public boolean hasFinished() {
+		return hasWon() || hasLost();
+	}
 
 	public void walk() {
-		if (!isWalking())
+		if (!isWalking() && !hasFinished())
 			setCurrentAnimation(walking);
 	}
 
 	public void jump() {
-		if (isWalking())
+		if (isWalking() && !hasFinished())
 			setCurrentAnimation(jumping);
 	}
 
 	public void dive() {
-		if (isWalking())
+		if (isWalking() && !hasFinished())
 			setCurrentAnimation(diving);
 	}
 
@@ -230,10 +234,6 @@ public abstract class Character extends GraphicalEntity {
 		if (!isJumping())
 			setY(ground);
 	}
-
-	/*
-	 * public String getPathFood() { return pathFood; }
-	 */
 
 	public Music getBackgroundMusic() {
 		return backgroundMusic;

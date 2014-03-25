@@ -153,7 +153,6 @@ public class Game {
 			int tileLeftX, int tileDownY) {
 		for (int tileX = tileRightX; tileX > tileLeftX; --tileX)
 			if (cellHasLayerProperty(layer, tileX, tileDownY, "factus")) {
-				// Thread.sleep(500); ?
 				// Déplacement du personnage après le factus
 				character.setX((int) ((tileX + 1) * layer.getTileWidth()));
 				getHealthPoints().lose();
@@ -178,7 +177,7 @@ public class Game {
 	}
 
 	public boolean gameOver() {
-		return character.hasWon() || character.hasLost();
+		return character.hasFinished();
 	}
 
 }
