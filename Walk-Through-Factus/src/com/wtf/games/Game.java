@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.wtf.assets.GameAssets;
 import com.wtf.entities.Entity;
 import com.wtf.entities.EntityRenderer;
 import com.wtf.entities.graphical.characters.Character;
@@ -29,6 +31,11 @@ public class Game {
 	private Map<String, Entity> infos;
 	private Vector<Food> foods;
 
+	private Sound factusSound;
+	private Sound loseSound;
+	private Sound miamSound;
+	private Sound winSound;
+	
 	public Game(CharacterEnum characterName, LevelEnum levelName) {
 		character = CharacterFactory.getCharacter(characterName);
 		level = character.getLevel(levelName);
@@ -39,6 +46,11 @@ public class Game {
 		
 		foods = new Vector<Food>();
 		setFoods();
+		
+		factusSound = GameAssets.manager.get(GameAssets.FACTUS_SOUND);
+		loseSound = GameAssets.manager.get(GameAssets.LOSE_SOUND);
+		miamSound = GameAssets.manager.get(GameAssets.MIAM_SOUND);
+		winSound = GameAssets.manager.get(GameAssets.WIN_SOUND);
 	}
 
 	// Initialise les foods selon les positions indiquées sur la map
@@ -126,6 +138,8 @@ public class Game {
 					if (foodTileX == tileX && foodTileY == tileY) {
 						getScore().add(Food.getPoints());
 						foods.remove(food);
+						
+						miamSound.play();
 						return;
 					}
 				}
@@ -158,6 +172,8 @@ public class Game {
 				getHealthPoints().lose();
 				if (getHealthPoints().allLost())
 					character.lose();
+				
+				factusSound.play();
 				return;
 			}
 	}
@@ -178,6 +194,13 @@ public class Game {
 
 	public boolean gameOver() {
 		return character.hasFinished();
+	}
+	
+	public void playGameOverSound() {
+		if (character.hasWon())
+			winSound.play();
+		else
+			loseSound.play();
 	}
 
 }

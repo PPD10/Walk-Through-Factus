@@ -9,6 +9,7 @@ import static com.wtf.assets.GameAssets.WALKING_FILENAME;
 import static com.wtf.assets.GameAssets.WINNER_FILENAME;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -57,6 +58,8 @@ public abstract class Character extends GraphicalEntity {
 
 	private Music backgroundMusic;
 
+	private Sound jumpSound;
+
 	public Character(String folderName, FoodEnum foodName) {
 		// Initialisation du personnage
 		super(START_X, START_Y);
@@ -78,9 +81,10 @@ public abstract class Character extends GraphicalEntity {
 		loser = new TextureRegion(loserTexture);
 		winner = new TextureRegion(winnerTexture);
 
-		// Initialisation de la musique de fond
+		// Initialisation de la musique de fond et du saut
 		backgroundMusic = GameAssets.manager.get(formatPath(MUSIC_FILENAME));
-
+		jumpSound = GameAssets.manager.get(GameAssets.JUMP_SOUND);
+		
 		// Initialisation du personnage en marche
 		walk();
 	}
@@ -207,8 +211,10 @@ public abstract class Character extends GraphicalEntity {
 	}
 
 	public void jump() {
-		if (isWalking() && !hasFinished())
+		if (isWalking() && !hasFinished()) {
 			setCurrentAnimation(jumping);
+			jumpSound.play();
+		}
 	}
 
 	public void dive() {

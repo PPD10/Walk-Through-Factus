@@ -31,14 +31,12 @@ public class GameScreen implements Screen {
 	public GameScreen(WTF wtf, CharacterEnum characterName, LevelEnum levelName) {
 		// Chargement des gameAssets
 		GameAssets.load(characterName, levelName);
+		GameAssets.loadSounds();
 		GameAssets.manager.finishLoading();
 
 		this.wtf = wtf;
 
 		game = new Game(characterName, levelName);
-
-		game.getCharacter().getBackgroundMusic().setLooping(true);
-		game.getCharacter().getBackgroundMusic().play();
 
 		// Caméra dont l'affichage est égal à la taille de l'écran
 		camera = new OrthographicCamera();
@@ -52,6 +50,9 @@ public class GameScreen implements Screen {
 		// Détection des mouvements du joueur sur l'écran
 		Gdx.input.setInputProcessor(new GestureDetector(
 				new PlayerGestureListener(game.getCharacter())));
+
+		game.getCharacter().getBackgroundMusic().setLooping(true);
+		game.getCharacter().getBackgroundMusic().play();
 	}
 
 	@Override
@@ -71,6 +72,8 @@ public class GameScreen implements Screen {
 			// Mise à jour de la position des informations
 			updateInfosPosition();
 		} else {
+			game.getCharacter().getBackgroundMusic().stop();
+			game.playGameOverSound();
 			// Mise en pause de l'exécution pendant deux secondes
 			try {
 				Thread.sleep(2000);

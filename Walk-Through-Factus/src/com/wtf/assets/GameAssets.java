@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -45,6 +46,13 @@ public class GameAssets {
 	public static final String CHOCOLATE_ECLAIR_FILENAME = "chocolateEclair.png";
 	public static final String LOLLIPOP_FILENAME = "lollipop.png";
 	public static final String SANDWICH_FILENAME = "sandwich.png";
+
+	// Sound effects
+	public static final String FACTUS_SOUND = "worlds/soundEffects/factus.mp3";
+	public static final String JUMP_SOUND = "worlds/soundEffects/jump.mp3";
+	public static final String LOSE_SOUND = "worlds/soundEffects/lose.mp3";
+	public static final String MIAM_SOUND = "worlds/soundEffects/miam.mp3";
+	public static final String WIN_SOUND = "worlds/soundEffects/win.mp3";
 
 	static {
 		manager.setLoader(TiledMap.class, new TmxMapLoader(
@@ -135,6 +143,14 @@ public class GameAssets {
 		default:
 			return LEVEL1_FOLDER_NAME;
 		}
+	}
+	
+	public static void loadSounds() {
+		manager.load(new AssetDescriptor<Sound>(FACTUS_SOUND, Sound.class));
+		manager.load(new AssetDescriptor<Sound>(JUMP_SOUND, Sound.class));
+		manager.load(new AssetDescriptor<Sound>(LOSE_SOUND, Sound.class));
+		manager.load(new AssetDescriptor<Sound>(MIAM_SOUND, Sound.class));
+		manager.load(new AssetDescriptor<Sound>(WIN_SOUND, Sound.class));
 	}
 
 	public static void dispose() {
