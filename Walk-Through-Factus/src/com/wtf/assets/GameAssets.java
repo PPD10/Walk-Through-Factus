@@ -32,11 +32,11 @@ public class GameAssets {
 	public static final String WINNER_FILENAME = "winner.png";
 
 	public static final String MUSIC_FILENAME = "music.mp3";
-	
+
 	// Level
 	public static final String MAP_FOLDER_PATH = "worlds/maps/";
 	public static final String MAP_FILENAME = "map.tmx";
-	
+
 	public static final String LEVEL1_FOLDER_NAME = "level1/";
 
 	// Food
@@ -46,31 +46,16 @@ public class GameAssets {
 	public static final String LOLLIPOP_FILENAME = "lollipop.png";
 	public static final String SANDWICH_FILENAME = "sandwich.png";
 
+	static {
+		manager.setLoader(TiledMap.class, new TmxMapLoader(
+				new InternalFileHandleResolver()));
+	}
+
 	public static void load(CharacterEnum characterName) {
-		String folderName;
-		FoodEnum foodName = null;
+		load(getFoodName(characterName));
 
-		switch (characterName) {
-		case FLUFFY_BALL:
-			folderName = FLUFFY_BALL_FOLDER_NAME;
-			foodName = FluffyBall.FOOD_NAME;
-			break;
-		case PUNK_GIRAFFE:
-			folderName = PUNK_GIRAFFE_FOLDER_NAME;
-			foodName = PunkGiraffe.FOOD_NAME;
-			break;
-		case TELETOCTOPUS:
-			folderName = TELETOCTOPUS_FOLDER_NAME;
-			foodName = Teletoctopus.FOOD_NAME;
-			break;
-		default:
-			folderName = PUNK_GIRAFFE_FOLDER_NAME;
-			foodName = PunkGiraffe.FOOD_NAME;
-		}
-
-		load(foodName);
-
-		String folderPath = CHARACTER_FOLDER_PATH + folderName;
+		String folderPath = CHARACTER_FOLDER_PATH
+				+ getCharacterFolderName(characterName);
 
 		manager.load(new AssetDescriptor<Texture>(
 				folderPath + WALKING_FILENAME, Texture.class));
@@ -82,70 +67,78 @@ public class GameAssets {
 				Texture.class));
 		manager.load(new AssetDescriptor<Texture>(folderPath + WINNER_FILENAME,
 				Texture.class));
-		
+
 		manager.load(new AssetDescriptor<Music>(folderPath + MUSIC_FILENAME,
 				Music.class));
 	}
-	
+
 	public static void load(FoodEnum foodName) {
-		String fileName;
-
-		switch (foodName) {
-		case CHOCOLATE_ECLAIR:
-			fileName = CHOCOLATE_ECLAIR_FILENAME;
-			break;
-		case LOLLIPOP:
-			fileName = LOLLIPOP_FILENAME;
-			break;
-		case SANDWICH:
-			fileName = SANDWICH_FILENAME;
-			break;
-		default:
-			fileName = SANDWICH_FILENAME;
-		}
-
-		String folderPath = FOOD_FOLDER_PATH + fileName;
+		String folderPath = FOOD_FOLDER_PATH + getFoodFilename(foodName);
 
 		manager.load(new AssetDescriptor<Texture>(folderPath, Texture.class));
 	}
 
 	public static void load(CharacterEnum characterName, LevelEnum levelName) {
 		load(characterName);
-		
-		String levelFolderName;
-		
-		switch(levelName) {
-		case LEVEL1:
-			levelFolderName = LEVEL1_FOLDER_NAME;
-			break;
-		default:
-			levelFolderName = LEVEL1_FOLDER_NAME;
-		}
-		
-		String characterFolderName;
 
+		String mapFilenamePath = MAP_FOLDER_PATH
+				+ getLevelFolderName(levelName)
+				+ getCharacterFolderName(characterName) + MAP_FILENAME;
+
+		manager.load(new AssetDescriptor<TiledMap>(mapFilenamePath,
+				TiledMap.class));
+	}
+
+	public static String getCharacterFolderName(CharacterEnum characterName) {
 		switch (characterName) {
 		case FLUFFY_BALL:
-			characterFolderName = FLUFFY_BALL_FOLDER_NAME;
-			break;
+			return FLUFFY_BALL_FOLDER_NAME;
 		case PUNK_GIRAFFE:
-			characterFolderName = PUNK_GIRAFFE_FOLDER_NAME;
-			break;
+			return PUNK_GIRAFFE_FOLDER_NAME;
 		case TELETOCTOPUS:
-			characterFolderName = TELETOCTOPUS_FOLDER_NAME;
-			break;
+			return TELETOCTOPUS_FOLDER_NAME;
 		default:
-			characterFolderName = PUNK_GIRAFFE_FOLDER_NAME;
-		} 
-		
-		String mapFilenamePath = MAP_FOLDER_PATH + levelFolderName + characterFolderName + MAP_FILENAME;
-		
-		manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		manager.load(new AssetDescriptor<TiledMap>(mapFilenamePath, TiledMap.class));
+			return PUNK_GIRAFFE_FOLDER_NAME;
+		}
 	}
-	
+
+	public static FoodEnum getFoodName(CharacterEnum characterName) {
+		switch (characterName) {
+		case FLUFFY_BALL:
+			return FluffyBall.FOOD_NAME;
+		case PUNK_GIRAFFE:
+			return PunkGiraffe.FOOD_NAME;
+		case TELETOCTOPUS:
+			return Teletoctopus.FOOD_NAME;
+		default:
+			return PunkGiraffe.FOOD_NAME;
+		}
+	}
+
+	public static String getFoodFilename(FoodEnum foodName) {
+		switch (foodName) {
+		case CHOCOLATE_ECLAIR:
+			return CHOCOLATE_ECLAIR_FILENAME;
+		case LOLLIPOP:
+			return LOLLIPOP_FILENAME;
+		case SANDWICH:
+			return SANDWICH_FILENAME;
+		default:
+			return SANDWICH_FILENAME;
+		}
+	}
+
+	public static String getLevelFolderName(LevelEnum levelName) {
+		switch (levelName) {
+		case LEVEL1:
+			return LEVEL1_FOLDER_NAME;
+		default:
+			return LEVEL1_FOLDER_NAME;
+		}
+	}
+
 	public static void dispose() {
-		manager.dispose();
+		manager.clear();
 	}
 
 }
